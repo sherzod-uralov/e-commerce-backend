@@ -85,13 +85,13 @@ const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params
 
-        const findProduct = await Product.findByPk(id);
+        const findProduct = await Product.findByPk(id); 
 
         if(!findProduct){
            return  res.status(400).json({
                status: 400,
                msg: 'product not found'
-           })
+           }) 
         }
 
         const storage = getStorage()
