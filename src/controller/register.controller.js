@@ -12,8 +12,10 @@ const Register = async (req, res) => {
             return res.status(400).json({
                 status: 400,
                 msg: error.details[0].message,
-            })
+            }) 
         }
+
+        
 
         const findUser = await User.findOne({ where: { email } })
 
