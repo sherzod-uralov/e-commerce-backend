@@ -30,7 +30,7 @@ Product.init(
         },
         discounted: {
             type: DataTypes.INTEGER,
-        },
+        }, 
         views: {
             type: DataTypes.INTEGER,
         },
@@ -38,9 +38,9 @@ Product.init(
     {
         modelName: 'product',
         tableName: 'product',
-        paranoid: true,
         sequelize: newSequelize,
     }
 )
 
 export { Product }
+

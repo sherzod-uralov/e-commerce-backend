@@ -30,3 +30,7 @@ ProductRating.init(
 )
 
 export { ProductRating }
+
+
+User.hasMany(ProductRating,{foreignKey:'user_id'})
+Product.hasMany(ProductRating,{foreignKey:'product_id'})

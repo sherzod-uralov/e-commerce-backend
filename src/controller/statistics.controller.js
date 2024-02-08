@@ -38,7 +38,6 @@ const getProductStatistics = async (req, res) => {
 
 const getUserLoggedInToday = async (req, res) => {
     try {
-        const { day } = req.params
 
         const statistics = await User.findAll({
             where: {
@@ -63,3 +62,4 @@ const getUserLoggedInToday = async (req, res) => {
         })
     }
 }
+

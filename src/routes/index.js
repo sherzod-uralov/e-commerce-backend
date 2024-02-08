@@ -9,6 +9,7 @@ import {
     updateProduct,
 } from '../controller/product.controller.js'
 import upload from '../config/multer.config.js'
+import {getUserProfile} from "../controller/user.controller.js";
 
 export const router = Router()
 
@@ -99,7 +100,7 @@ router.post('/login', login)
  */
 
 router.get('/product', getProducts)
-
+ 
 /**
  * @openapi
  * /product:
@@ -166,6 +167,9 @@ router.delete('/product/:id', deleteProduct)
  *         description: Product updated successfully
  */
 
-router.put('/product/:id', updateProduct)
+router.put('/product/:id',upload.single('product_image'), updateProduct)
+
+
+router.get('/user', getUserProfile)
 
 export default router

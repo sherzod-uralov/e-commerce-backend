@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize'
 import { newSequelize } from '../config/postgres.config.js'
 import { User } from './user.model.js'
+import {Product} from "./product.model.js";
 
 class Favorites extends Model {}
 
@@ -28,5 +29,8 @@ Favorites.init(
         sequelize: newSequelize,
     }
 )
+
+Favorites.belongsTo(User, { foreignKey: 'user_id' })
+Favorites.belongsTo(Product, { foreignKey: 'product_id' })
 
 export { Favorites }

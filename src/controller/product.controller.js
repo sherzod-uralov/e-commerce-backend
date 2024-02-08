@@ -1,16 +1,16 @@
 import { Product } from '../model/product.model.js'
 import { User } from '../model/user.model.js'
 import jwt from 'jsonwebtoken'
-import { getStorage, ref, uploadBytes } from 'firebase/storage'
-
+import { getStorage, ref, uploadBytes,deleteObject, getDownloadURL } from 'firebase/storage'
 import * as path from 'path'
 import jwtConfig from '../config/jwt.config.js'
+import { log } from 'console'
+
 const getProducts = async (req, res) => {
     try {
         const jwt = jwtConfig.verify(req.headers.authorization)
-        const user = await User.findOne({ where: { user_id: jwt.user_id } })
 
-        const product = await Product.findAll({ where: user.user_id })
+        const product = await Product.findAll()
 
         res.status(200).json({
             status: 200,
@@ -27,11 +27,15 @@ const addProduct = async (req, res) => {
     const image = Date.now() + path.extname(req.file.originalname)
     const storageRef = ref(storage, image)
 
+
     const medata = {
         contentType: req.file.mimetype,
     }
 
-    const imageUpload = await uploadBytes(storageRef, req.file.buffer, medata)
+    await uploadBytes(storageRef, req.file.buffer, medata)
+
+
+    const imageUrl = await getDownloadURL(storageRef);
 
     try {
         const {
@@ -55,7 +59,7 @@ const addProduct = async (req, res) => {
         const createProduct = await Product.create({
             product_name,
             product_description,
-            product_image: `gs://backend-405523.appspot.com/${image}`,
+            product_image: imageUrl,
             product_size,
             product_price,
             discounted,
@@ -80,6 +84,23 @@ const addProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params
+
+        const findProduct = await Product.findByPk(id);
+
+        if(!findProduct){
+           return  res.status(400).json({
+               status: 400,
+               msg: 'product not found'
+           })
+        }
+
+        const storage = getStorage()
+        const file = findProduct.product_image.split('?')[0];
+
+        const storageRef = ref(storage,file)
+
+        await deleteObject(storageRef);
+
         const deleteProduct = await Product.destroy({
             where: {
                 product_id: id,
@@ -91,6 +112,7 @@ const deleteProduct = async (req, res) => {
             deleteProduct,
         })
     } catch (e) {
+        console.log(e);
         res.status(500).json({
             status: 500,
             msg: 'internal server error',
@@ -111,6 +133,25 @@ const updateProduct = async (req, res) => {
             })
         }
 
+        const storage = getStorage()
+
+        const file = findProduct.product_image.split('/').pop();
+
+        const Ref = ref(storage,file);
+
+        await deleteObject(Ref)
+
+        //<---------------------------------------------------------------------->
+
+        const image = Date.now() + path.extname(req.file.originalname)
+        const storageRef = ref(storage, image)
+
+        const medata = {
+            contentType: req.file.mimetype,
+        }
+
+        const imageUpload = await uploadBytes(storageRef, req.file.buffer, medata)
+
         const {
             product_name,
             product_description,
@@ -125,7 +166,7 @@ const updateProduct = async (req, res) => {
             {
                 product_name,
                 product_description,
-                product_image,
+                product_image: `gs://backend-405523.appspot.com/${image}`,
                 product_size,
                 product_price,
                 discounted,
@@ -137,7 +178,14 @@ const updateProduct = async (req, res) => {
                 },
             }
         )
+
+        return res.status(200).json({
+            status: 200,
+            msg: 'product updated',
+        })
+
     } catch (e) {
+        console.log(e)
         res.status(500).json({
             status: 500,
             msg: 'internal server error',

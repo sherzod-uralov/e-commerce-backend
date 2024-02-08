@@ -1,10 +1,9 @@
 import { User } from '../model/user.model.js'
 import { compare } from 'bcrypt'
-import jwt from 'jsonwebtoken'
 import { token } from 'morgan'
-import joi from 'joi'
 import { registerValidate } from '../validation/register.validate.js'
 import jwtConfig from '../config/jwt.config.js'
+import {ProductRating} from "../model/product_rating.model.js";
 
 const login = async (req, res) => {
     try {

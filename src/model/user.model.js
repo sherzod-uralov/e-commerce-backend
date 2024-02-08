@@ -90,6 +90,21 @@ User.init(
             type: DataTypes.BOOLEAN,
             defaultValue: false,
         },
+        isDeleted: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
+        isUpdated: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
+        isCreated: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
+        photo: {
+            type: DataTypes.TEXT,
+        }
     },
     {
         modelName: 'users',
