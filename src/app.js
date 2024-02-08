@@ -19,7 +19,7 @@ const bootStrap = async () => {
         await newSequelize.sync({ alter: true }) 
 
         const PORT = process.env.PORT || 5400
-        const HOST = '192.168.0.103'
+        const HOST = 'localhost'
         swaggerDoc(app, PORT, HOST)
         app.listen(PORT, HOST, () =>
             console.log(
