@@ -16,7 +16,8 @@ const getUserProfile = async (req, res) => {
             user,
         })
     }
-    catch (e) {
+    catch (e) {-
+
         console.log(e)
         res.status(500).json({
             status: 500,
